@@ -1,9 +1,10 @@
 __author__ = 'IBM-cuiwc'
 import wx
 import win32api
-import win32con
+import pythoncom
 import globalvalue
 import pyHook
+import time
 
 class WindowMain(wx.Frame):
     def __init__(self):
@@ -16,10 +17,12 @@ class WindowMain(wx.Frame):
             style=wx.CAPTION | wx.CLOSE_BOX | wx.MINIMIZE_BOX)
         print(win32api.GetComputerName())
         panel = wx.Panel(self, id=-1, pos=(0, 0), style=wx.TAB_TRAVERSAL, name='panel1')
+        self.Bind(wx.EVT_CLOSE, self.OnExit)
         self.OnRun(panel)
     def OnRun(self,panel):
         self.keys=[]
         self.CreatePanel(panel)
+
         pass
     def CreatePanel(self,panel):
         rect = panel.Rect
@@ -59,13 +62,40 @@ class WindowMain(wx.Frame):
             rect = key.Rect()
             self.keys.append(key)
     def On(self,event):
-        for key in self.keys:
-            key.On()
-
+        print 'On'
+        pythoncom.PumpMessages()
         pass
     def Off(self,event):
-
+        win32api.PostQuitMessage()
         pass
+
+    def OnExit(self,event):
+        win32api.PostQuitMessage()
+        self.Destroy()
+def onKeyboardEvent(event):
+    print event
+    print event.Time
+    print time.time()
+    '''# Returns the number of milliseconds since windows started'''
+    print win32api.GetTickCount()
+
+    print 'MessageName:',event.MessageName
+    print 'Message:',event.Message
+    print 'Time:', time.ctime(time.time())
+    print 'Window:',event.Window
+    print 'WindowName:',event.WindowName
+    print 'Ascii:', event.Ascii, chr(event.Ascii)
+    print 'Key:', event.Key
+    print 'KeyID:', event.KeyID
+    print 'ScanCode:', event.ScanCode
+    print 'Extended:', event.Extended
+    print 'Injected:', event.Injected
+    print 'Alt', event.Alt
+    print 'Transition', event.Transition
+    print '---'
+
+    '''# return True to pass the event to other handlers'''
+    return True
 class KeyModule():
     def __init__(self,panel,rect):
         self.k = wx.TextCtrl(panel, -1, pos=(rect[0] + 0, rect[1] + 60), size=(50,30))
@@ -95,6 +125,9 @@ class MyApp(wx.App):
 def main():
     app = MyApp()
     app.MainLoop()
+    hk = pyHook.HookManager()
+    hk.KeyDown = onKeyboardEvent
+    hk.HookKeyboard()
 
 if  __name__ == "__main__":
     main()
