@@ -1,12 +1,24 @@
 __author__ = 'IBM-cuiwc'
 # -*- coding: utf-8 -*-
-import pythoncom, pyHook
+import pythoncom,pyHook
 import win32api
 import time
 import win32con
 
 
 Flag = False
+
+def keyinput(k1,k2,k3,k4,k5):
+    win32api.keybd_event(k1,0,0,0)
+    win32api.keybd_event(k1,0,win32con.KEYEVENTF_KEYUP,0)
+    win32api.keybd_event(k2,0,0,0)
+    win32api.keybd_event(k2,0,win32con.KEYEVENTF_KEYUP,0)
+    win32api.keybd_event(k3,0,0,0)
+    win32api.keybd_event(k3,0,win32con.KEYEVENTF_KEYUP,0)
+    win32api.keybd_event(k4,0,0,0)
+    win32api.keybd_event(k4,0,win32con.KEYEVENTF_KEYUP,0)
+    win32api.keybd_event(k5,0,0,0)
+    win32api.keybd_event(k5,0,win32con.KEYEVENTF_KEYUP,0)
 
 def onMouseEvent(event):
 
@@ -45,6 +57,8 @@ def OnKeyboardEvent(event):
     print 'WindowName:',event.WindowName
     print 'Ascii:', event.Ascii, chr(event.Ascii)
     '''
+    if event.WindowName != 'Warcraft III':
+        return True
     print 'Key:', event.Key
     print 'KeyID:', event.KeyID
     '''
@@ -52,8 +66,11 @@ def OnKeyboardEvent(event):
     print 'Extended:', event.Extended
     print 'Injected:', event.Injected
     '''
+
     print 'Alt', event.Alt
     print 'Transition', event.Transition
+    print 'WindowName:',event.WindowName
+
     print '---'
     if event.Alt == 32 :
         print 'open1'
@@ -66,74 +83,35 @@ def OnKeyboardEvent(event):
             return False
     if Flag == True:
         if event.Key == '6': #幽冥漫步
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(86,0,0,0)
+            keyinput(81,81,87,82,86)
             return False
         elif event.Key == '7': #冰墙
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(71,0,0,0)
+            keyinput(69,81,81,82,71)
             return False
         elif event.Key == '8': #火人
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(70,0,0,0)
+            keyinput(69,69,81,82,70)
             return False
         elif event.Key == '0': #天火
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(84,0,0,0)
+            keyinput(69,69,69,82,84)
             return False
         elif event.Key == '1': #急速冷却
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(89,0,0,0)
+            keyinput(81,81,81,82,89)
             return False
         elif event.Key == '2': #陨石
-            win32api.keybd_event(87,0,0,0)
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(68,0,0,0)
+            keyinput(87,69,69,82,68)
             return False
         elif event.Key == '3': #飓风
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(87,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(88,0,0,0)
+            keyinput(87,87,81,82,88)
             return False
         elif event.Key == '4': #磁暴
-            win32api.keybd_event(87,0,0,0)
-            win32api.keybd_event(87,0,0,0)
-            win32api.keybd_event(87,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(67,0,0,0)
+            keyinput(87,87,87,82,87)
             return False
         elif event.Key == '5': #超声波
-            win32api.keybd_event(81,0,0,0)
-            win32api.keybd_event(87,0,0,0)
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(66,0,0,0)
+            keyinput(81,87,69,82,66)
             return False
         elif event.Key == '9': #灵动迅捷
-            win32api.keybd_event(87,0,0,0)
-            win32api.keybd_event(87,0,0,0)
-            win32api.keybd_event(69,0,0,0)
-            win32api.keybd_event(82,0,0,0)
-            win32api.keybd_event(90,0,0,0)
+            keyinput(87,87,69,82,90)
+
             return False
     # return True to pass the event to other handlers
     return True
