@@ -2,13 +2,38 @@ __author__ = 'IBM-cuiwc'
 # -*- coding: utf-8 -*-
 import pythoncom,pyHook
 import win32api
-import time
+#import time
 import win32con
 
 
 Flag = False
+TotalSkill = 1
+Scroll = 0
+'''
+kaelkey={'0':{'flag':,'time':,}}
+'''
+SkillKey = ['D','B','X','C','T','Y','V','G','F','Z']
+KaelKey=[]
+VSkillKey = {
+    'D':[87,69,69,82,68],
+    'B':[81,87,69,82,66],
+    'X':[87,87,81,82,88],
+    'C':[87,87,87,82,87],
+    'T':[69,69,69,82,84],
+    'Y':[81,81,81,82,89],
+    'V':[81,81,87,82,86],
+    'G':[69,81,81,82,71],
+    'F':[69,69,81,82,70],
+    'Z':[87,87,69,82,90]
+}
+ScrollKey=[69,81,87]
 
-def keyinput(k1,k2,k3,k4,k5):
+def keyinput(*args):
+#    print args
+    for arg in args:
+        win32api.keybd_event(arg,0,0,0)
+        win32api.keybd_event(arg,0,win32con.KEYEVENTF_KEYUP,0)
+    '''
     win32api.keybd_event(k1,0,0,0)
     win32api.keybd_event(k1,0,win32con.KEYEVENTF_KEYUP,0)
     win32api.keybd_event(k2,0,0,0)
@@ -19,6 +44,7 @@ def keyinput(k1,k2,k3,k4,k5):
     win32api.keybd_event(k4,0,win32con.KEYEVENTF_KEYUP,0)
     win32api.keybd_event(k5,0,0,0)
     win32api.keybd_event(k5,0,win32con.KEYEVENTF_KEYUP,0)
+    '''
 
 def onMouseEvent(event):
 
@@ -40,7 +66,7 @@ def onMouseEvent(event):
   return True
 
 def OnKeyboardEvent(event):
-    global Flag
+    global Flag,TotalSkill,VSkillKey,SkillKey,Scroll,ScrollKey
     # Return the time in seconds since the epoch as a floating point number.
     #
     # The epoch is the point where the time starts. On January 1st of that year,
@@ -57,31 +83,56 @@ def OnKeyboardEvent(event):
     print 'WindowName:',event.WindowName
     print 'Ascii:', event.Ascii, chr(event.Ascii)
     '''
-    if event.WindowName != 'Warcraft III':
-        return True
-    print 'Key:', event.Key
-    print 'KeyID:', event.KeyID
+#    if event.WindowName != 'Warcraft III':
+#        return True
+#    print 'Key:', event.Key
+
+#    print 'KeyID:', event.KeyID
     '''
     print 'ScanCode:', event.ScanCode
     print 'Extended:', event.Extended
     print 'Injected:', event.Injected
     '''
 
-    print 'Alt', event.Alt
-    print 'Transition', event.Transition
-    print 'WindowName:',event.WindowName
+#    print 'Alt', event.Alt
+#    print 'Transition', event.Transition
+#    print 'WindowName:',event.WindowName
 
-    print '---'
+#    print '---'
     if event.Alt == 32 :
-        print 'open1'
-        if event.KeyID == 79:
+        if event.Key == 'O':
             Flag = True
-            print 'open'
+#            print 'open'
             return False
-        elif event.KeyID == 80:
+        elif event.Key == 'P':
             Flag = False
+ #           print 'close'
             return False
+        elif event.Key == '1':
+            TotalSkill = 1
+            return False
+        elif event.Key == '2':
+            TotalSkill = 2
+            return False
+
     if Flag == True:
+        if event.Key in SkillKey:
+            if event.Key in KaelKey:
+                return True
+            else:
+                keyinput(VSkillKey[event.Key][0],VSkillKey[event.Key][1],VSkillKey[event.Key][2],VSkillKey[event.Key][3])
+                if len(KaelKey) >= TotalSkill:
+                    KaelKey.pop(0)
+                KaelKey.append(event.Key)
+                return False
+        elif event.Key == 'Oem_3':
+            Scroll +=1
+            if Scroll > 2 :
+                Scroll = 0
+            keyinput(ScrollKey[Scroll],ScrollKey[Scroll],ScrollKey[Scroll])
+            return False
+
+        '''
         if event.Key == '6': #幽冥漫步
             keyinput(81,81,87,82,86)
             return False
@@ -113,6 +164,7 @@ def OnKeyboardEvent(event):
             keyinput(87,87,69,82,90)
 
             return False
+        '''
     # return True to pass the event to other handlers
     return True
 
