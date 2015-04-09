@@ -2,29 +2,29 @@ __author__ = 'IBM-cuiwc'
 # -*- coding: utf-8 -*-
 import pythoncom,pyHook
 import win32api
-#import time
+import time
 import win32con
 
-
+ScrollFlag = False
 Flag = False
-TotalSkill = 1
+TotalSkill = 2
 Scroll = 0
 '''
 kaelkey={'0':{'flag':,'time':,}}
 '''
-SkillKey = ['D','B','X','C','T','Y','V','G','F','Z']
+SkillKey = ['2','5','3','4','0','1','6','7','8','9']
 KaelKey=[]
 VSkillKey = {
-    'D':[87,69,69,82,68],
-    'B':[81,87,69,82,66],
-    'X':[87,87,81,82,88],
-    'C':[87,87,87,82,87],
-    'T':[69,69,69,82,84],
-    'Y':[81,81,81,82,89],
-    'V':[81,81,87,82,86],
-    'G':[69,81,81,82,71],
-    'F':[69,69,81,82,70],
-    'Z':[87,87,69,82,90]
+    '2':[87,69,69,82,68],
+    '5':[81,87,69,82,66],
+    '3':[87,87,81,82,88],
+    '4':[87,87,87,82,87],
+    '0':[69,69,69,82,84],
+    '1':[81,81,81,82,89],
+    '6':[81,81,87,82,86],
+    '7':[69,81,81,82,71],
+    '8':[69,69,81,82,70],
+    '9':[87,87,69,82,90]
 }
 ScrollKey=[69,81,87]
 
@@ -33,40 +33,39 @@ def keyinput(*args):
     for arg in args:
         win32api.keybd_event(arg,0,0,0)
         win32api.keybd_event(arg,0,win32con.KEYEVENTF_KEYUP,0)
-    '''
-    win32api.keybd_event(k1,0,0,0)
-    win32api.keybd_event(k1,0,win32con.KEYEVENTF_KEYUP,0)
-    win32api.keybd_event(k2,0,0,0)
-    win32api.keybd_event(k2,0,win32con.KEYEVENTF_KEYUP,0)
-    win32api.keybd_event(k3,0,0,0)
-    win32api.keybd_event(k3,0,win32con.KEYEVENTF_KEYUP,0)
-    win32api.keybd_event(k4,0,0,0)
-    win32api.keybd_event(k4,0,win32con.KEYEVENTF_KEYUP,0)
-    win32api.keybd_event(k5,0,0,0)
-    win32api.keybd_event(k5,0,win32con.KEYEVENTF_KEYUP,0)
-    '''
 
 def onMouseEvent(event):
-
+    global  ScrollFlag
   # 监听鼠标事件
-  print "MessageName:",event.MessageName
-  print "Message:", event.Message
-  print "Time:", event.Time
-  print "Window:", event.Window
-  print "WindowName:", event.WindowName
-  print "Position:", event.Position
-  print "Wheel:", event.Wheel
-  print "Injected:", event.Injected
-  print"---"
-
+    '''
+    print "MessageName:",event.MessageName
+    print "Message:", event.Message
+    print "Time:", event.Time
+    print "Window:", event.Window
+    print "WindowName:", event.WindowName
+    print "Position:", event.Position
+    print "Wheel:", event.Wheel
+    print "Injected:", event.Injected
+    print"---"
+    '''
+    if event.WindowName != 'Warcraft III':
+        return True
+    if ScrollFlag == True:
+        if event.Wheel == -1:
+#            print 'huizhuan'
+            keyinput(103)
+            return False
+        elif event.Wheel == 1:
+            keyinput(104)
+            return False
   # 返回 True 以便将事件传给其它处理程序
   # 注意，这儿如果返回 False ，则鼠标事件将被全部拦截
   # 也就是说你的鼠标看起来会僵在那儿，似乎失去响应了
 
-  return True
+    return True
 
 def OnKeyboardEvent(event):
-    global Flag,TotalSkill,VSkillKey,SkillKey,Scroll,ScrollKey
+    global Flag,TotalSkill,VSkillKey,SkillKey,Scroll,ScrollKey,ScrollFlag
     # Return the time in seconds since the epoch as a floating point number.
     #
     # The epoch is the point where the time starts. On January 1st of that year,
@@ -74,7 +73,7 @@ def OnKeyboardEvent(event):
     # Returns the number of milliseconds since windows started
     '''
     print event.Time
-    print time.time()
+#    print time.time()
     print win32api.GetTickCount()
     print 'MessageName:',event.MessageName
     print 'Message:',event.Message
@@ -83,8 +82,8 @@ def OnKeyboardEvent(event):
     print 'WindowName:',event.WindowName
     print 'Ascii:', event.Ascii, chr(event.Ascii)
     '''
-#    if event.WindowName != 'Warcraft III':
-#        return True
+    if event.WindowName != 'Warcraft III':
+        return True
 #    print 'Key:', event.Key
 
 #    print 'KeyID:', event.KeyID
@@ -108,23 +107,17 @@ def OnKeyboardEvent(event):
             Flag = False
  #           print 'close'
             return False
-        elif event.Key == '1':
-            TotalSkill = 1
-            return False
-        elif event.Key == '2':
-            TotalSkill = 2
-            return False
+    if event.KeyID == 118:
+        ScrollFlag = True
+        return False
+    elif event.KeyID == 119:
+        ScrollFlag = False
+        return False
 
     if Flag == True:
         if event.Key in SkillKey:
-            if event.Key in KaelKey:
-                return True
-            else:
-                keyinput(VSkillKey[event.Key][0],VSkillKey[event.Key][1],VSkillKey[event.Key][2],VSkillKey[event.Key][3])
-                if len(KaelKey) >= TotalSkill:
-                    KaelKey.pop(0)
-                KaelKey.append(event.Key)
-                return False
+            keyinput(VSkillKey[event.Key][0],VSkillKey[event.Key][1],VSkillKey[event.Key][2],VSkillKey[event.Key][3],VSkillKey[event.Key][4])
+            return False
         elif event.Key == 'Oem_3':
             Scroll +=1
             if Scroll > 2 :
@@ -132,39 +125,6 @@ def OnKeyboardEvent(event):
             keyinput(ScrollKey[Scroll],ScrollKey[Scroll],ScrollKey[Scroll])
             return False
 
-        '''
-        if event.Key == '6': #幽冥漫步
-            keyinput(81,81,87,82,86)
-            return False
-        elif event.Key == '7': #冰墙
-            keyinput(69,81,81,82,71)
-            return False
-        elif event.Key == '8': #火人
-            keyinput(69,69,81,82,70)
-            return False
-        elif event.Key == '0': #天火
-            keyinput(69,69,69,82,84)
-            return False
-        elif event.Key == '1': #急速冷却
-            keyinput(81,81,81,82,89)
-            return False
-        elif event.Key == '2': #陨石
-            keyinput(87,69,69,82,68)
-            return False
-        elif event.Key == '3': #飓风
-            keyinput(87,87,81,82,88)
-            return False
-        elif event.Key == '4': #磁暴
-            keyinput(87,87,87,82,87)
-            return False
-        elif event.Key == '5': #超声波
-            keyinput(81,87,69,82,66)
-            return False
-        elif event.Key == '9': #灵动迅捷
-            keyinput(87,87,69,82,90)
-
-            return False
-        '''
     # return True to pass the event to other handlers
     return True
 
@@ -175,7 +135,7 @@ hm.KeyDown = OnKeyboardEvent
 # set the hook
 hm.HookKeyboard()
 # wait forever
-#hm.MouseAll = onMouseEvent
-#hm.HookMouse()
+hm.MouseAll = onMouseEvent
+hm.HookMouse()
 
 pythoncom.PumpMessages(10000)
