@@ -26,6 +26,18 @@ VSkillKey = {
     '8':[69,69,81,82,70],
     '9':[87,87,69,82,90]
 }
+SLkillKey = {
+    '2':[68],
+    '5':[66],
+    '3':[88],
+    '4':[87],
+    '0':[84],
+    '1':[89],
+    '6':[86],
+    '7':[71],
+    '8':[70],
+    '9':[90]
+}
 ScrollKey=[69,81,87]
 
 def keyinput(*args):
@@ -82,6 +94,7 @@ def OnKeyboardEvent(event):
     print 'WindowName:',event.WindowName
     print 'Ascii:', event.Ascii, chr(event.Ascii)
     '''
+#    print 'KeyID:', event.KeyID
     if event.WindowName != 'Warcraft III':
         return True
 #    print 'Key:', event.Key
@@ -115,8 +128,12 @@ def OnKeyboardEvent(event):
         return False
 
     if Flag == True:
+
         if event.Key in SkillKey:
-            keyinput(VSkillKey[event.Key][0],VSkillKey[event.Key][1],VSkillKey[event.Key][2],VSkillKey[event.Key][3],VSkillKey[event.Key][4])
+            #keyinput(VSkillKey[event.Key][0],VSkillKey[event.Key][1],VSkillKey[event.Key][2],VSkillKey[event.Key][3],VSkillKey[event.Key][4])
+            keyinput(VSkillKey[event.Key][0],VSkillKey[event.Key][1],VSkillKey[event.Key][2],VSkillKey[event.Key][3])
+            time.sleep(0.3)
+            keyinput(SLkillKey[event.Key][0])
             return False
         elif event.Key == 'Oem_3':
             Scroll +=1
