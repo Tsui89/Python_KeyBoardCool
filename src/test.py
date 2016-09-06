@@ -1,4 +1,3 @@
-__author__ = 'IBM-cuiwc'
 # -*- coding: utf-8 -*-
 import pythoncom,pyHook
 import win32api

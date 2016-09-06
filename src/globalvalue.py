@@ -1,4 +1,3 @@
-__author__ = 'IBM-cuiwc'
 import keymap
 
 COOLID=1
